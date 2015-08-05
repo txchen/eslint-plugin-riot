@@ -1,0 +1,32 @@
+{
+  "name": "eslint-plugin-riot",
+  "version": "1.0.0",
+  "description": "eslint plugin to lint javascript in riot tag.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "tape test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/txchen/eslint-plugin-riot.git"
+  },
+  "keywords": [
+    "eslint",
+    "riot",
+    "lint",
+    "linter"
+  ],
+  "author": "Tianxiang Chen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/txchen/eslint-plugin-riot/issues"
+  },
+  "homepage": "https://github.com/txchen/eslint-plugin-riot#readme",
+  "devDependencies": {
+    "eslint": "^1.0.0",
+    "tape": "^4.0.2"
+  },
+  "dependencies": {
+    "htmlparser2": "^3.8.3"
+  }
+}
