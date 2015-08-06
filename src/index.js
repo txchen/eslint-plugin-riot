@@ -19,7 +19,7 @@ var tagProcessor = {
         blockIndex += 1
       }
       if (blockIndex < map.length) {
-        message.column += map[blockIndex].column
+        message.column += map[blockIndex].spaces
       }
     })
     return messages[0]

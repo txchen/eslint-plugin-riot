@@ -67,7 +67,7 @@ function extract(code) {
       lineNumber -= 1
 
       if (spaces !== undefined) {
-        map.push({ line: lineNumber, column: spaces.length })
+        map.push({ line: lineNumber, spaces: spaces.length })
       } else {
         map[map.length - 1].line = lineNumber
       }

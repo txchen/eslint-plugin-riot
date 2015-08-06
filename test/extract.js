@@ -11,6 +11,16 @@ function s() {
   return [].join.call(arguments, '\n')
 }
 
+test('extract tag with no script', function(t) {
+  assertExtract(t,
+    s('<app>',
+      '</app>'),
+    '',
+    []
+  )
+  t.end()
+})
+
 test('extract simple script', function(t) {
   assertExtract(t,
     s('<x-tag>',
@@ -18,7 +28,7 @@ test('extract simple script', function(t) {
       '</x-tag>'),
     s('',
       'var foo = 1'),
-    [ { line: 2, column: 0 } ]
+    [ { line: 2, spaces: 0 } ]
   )
   t.end()
 })
@@ -46,7 +56,7 @@ test('process indented script', function(t) {
       '',
       'var foo = 1',
       ''),
-    [ { line: 4, column: 4 } ]
+    [ { line: 4, spaces: 4 } ]
   )
   t.end()
 })
@@ -62,7 +72,7 @@ test('extract script with 1st line next to the script tag', function(t) {
       'var foo = 1',
       '  var baz = 1',
       ''),
-    [ { line: 4, column: 0 } ]
+    [ { line: 4, spaces: 0 } ]
   )
   t.end()
 })
@@ -82,7 +92,7 @@ test('extract script with last line next to the script tag', function(t) {
       '',
       'var foo = 1',
       'var baz = 1'),
-    [ { line: 6, column: 2 } ]
+    [ { line: 6, spaces: 2 } ]
   )
   t.end()
 })
@@ -119,8 +129,8 @@ test('extract multiple script tags', function(t) {
       'var foo = 2',
       'var baz = 2',
       ''),
-    [ { line: 9, column: 2 },
-      { line: 14, column: 4 } ]
+    [ { line: 9, spaces: 2 },
+      { line: 14, spaces: 4 } ]
   )
   t.end()
 })
@@ -140,7 +150,7 @@ test('trim last line spaces', function(t) {
       '',
       'var foo = 1',
       ''),
-    [ { line: 6, column: 4 } ]
+    [ { line: 6, spaces: 4 } ]
   )
   t.end()
 })
@@ -160,7 +170,23 @@ test('extract script containing "lt" characters', function(t) {
       '  doit()',
       '}',
       ''),
-    [ { line: 6, column: 2 } ]
+    [ { line: 6, spaces: 2 } ]
+  )
+  t.end()
+})
+
+test('extract script with tab', function(t) {
+  assertExtract(t,
+    s('<app>',
+      '\t<script type="es6">',
+      '\tvar b = 1',
+      '\t</script>',
+      '</app>'),
+    s('',
+      '',
+      'var b = 1',
+      ''),
+    [ { line: 4, spaces: 1 } ]
   )
   t.end()
 })
