@@ -1,3 +1,4 @@
+// forked from https://github.com/BenoitZugmeyer/eslint-plugin-html
 'use strict'
 
 var htmlparser = require('htmlparser2')
