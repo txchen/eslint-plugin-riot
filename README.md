@@ -55,5 +55,5 @@ Write your riot tag file with extension `.html` or `.tag`, and wrap your script 
 [npm-version-image]:http://img.shields.io/npm/v/eslint-plugin-riot.svg?style=flat-square
 [npm-url]:https://www.npmjs.com/package/eslint-plugin-riot
 
-[travis-image]:https://travis-ci.org/txchen/eslint-plugin-riot.svg
+[travis-image]:https://api.travis-ci.org/txchen/eslint-plugin-riot.svg?branch=master
 [travis-url]:https://travis-ci.org/txchen/eslint-plugin-riot
