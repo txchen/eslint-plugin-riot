@@ -1,5 +1,5 @@
 var test = require('tape')
-var processor = require('../src/index.js').processors['.tag.html']
+var processor = require('../src/index.js').processors['.html']
 
 function s() {
   return [].join.call(arguments, '\n')
@@ -42,8 +42,6 @@ test('should find code in tag', function(t) {
   t.equal(blocks.length, 1)
   t.equal(blocks[0],
     s('',
-      '',
-      '',
       'var foo = 1',
       '')
   )
@@ -56,10 +54,37 @@ test('postprocess code', function(t) {
     '  <div>riot</div>',
     '  <script type="es6">',
     '  var answer = 6 * 7;',
-    '  if (answer ==== 42) {',
+    '  if (answer === 42) {',
     '    console.log(answer);',
     '  }',
     '  </script>',
+    '</app>'
+  )
+  processor.preprocess(code)
+  var messages = [
+    [
+      { line: 1, column: 0, message: 'Use the global form of "use strict".' },
+      { line: 4, column: 3, message: 'Unexpected console statement.' }
+    ]
+  ]
+  var result = processor.postprocess(messages)
+  t.equal(result[0].message, 'Use the global form of "use strict".')
+  t.equal(result[1].message, 'Unexpected console statement.')
+
+  // line should be adjusted
+  t.equal(result[0].line, 3)
+  t.equal(result[1].line, 6)
+
+  // column should be adjusted
+  t.equal(result[0].column, 2)
+  t.equal(result[1].column, 5)
+  t.end()
+})
+
+test('postprocess tab indented code', function(t) {
+  var code = s(
+    '<app>',
+    '  <div>riot</div>',
     '\t<script type="es6">',
     '\tfunction boolean(arg) {',
     '\t\treturn;',
@@ -71,28 +96,20 @@ test('postprocess code', function(t) {
   processor.preprocess(code)
   var messages = [
     [
-      { line: 1, column: 0, message: 'Use the global form of "use strict".' },
-      { line: 6, column: 3, message: 'Unexpected console statement.' },
-      { line: 12, column: 2, message: 'Unreachable code after return.' },
-      { line: 13, column: 2, message: 'Unnecessary semicolon.' }
+      { line: 4, column: 2, message: 'Unreachable code after return.' },
+      { line: 5, column: 2, message: 'Unnecessary semicolon.' }
     ]
   ]
   var result = processor.postprocess(messages)
-  t.equal(result[0].message, 'Use the global form of "use strict".')
-  t.equal(result[1].message, 'Unexpected console statement.')
-  t.equal(result[2].message, 'Unreachable code after return.')
-  t.equal(result[3].message, 'Unnecessary semicolon.')
+  t.equal(result[0].message, 'Unreachable code after return.')
+  t.equal(result[1].message, 'Unnecessary semicolon.')
 
-  // line should not change
-  t.equal(result[0].line, 1)
-  t.equal(result[1].line, 6)
-  t.equal(result[2].line, 12)
-  t.equal(result[3].line, 13)
+  // line should be adjusted
+  t.equal(result[0].line, 6)
+  t.equal(result[1].line, 7)
 
   // column should be adjusted
-  t.equal(result[0].column, 2)
-  t.equal(result[1].column, 5)
-  t.equal(result[2].column, 3)
-  t.equal(result[3].column, 3)
+  t.equal(result[0].column, 3)
+  t.equal(result[1].column, 3)
   t.end()
 })

@@ -1,16 +1,15 @@
-// forked from https://github.com/BenoitZugmeyer/eslint-plugin-html
 'use strict'
 
 var htmlparser = require('htmlparser2')
 
 function extract(code) {
 
-  var scriptCode = []
-  var map = []
+  var scriptCode = ''
+  var tagStartLineNum = 0
+  var finished = false
   var inScript = false
-  var index = 0
-  var lineNumber = 1
   var indent
+  var indentRegex
 
   var parser = new htmlparser.Parser({
 
@@ -25,26 +24,20 @@ function extract(code) {
         return
       }
 
-      // Mark that we're inside a <script> a tag and push all new lines
-      // in between the last </script> tag and this <script> tag to preserve
-      // location information.
-      inScript = true
-      var newLines = code.slice(index, parser.endIndex).match(/\r\n|\n|\r/g)
-      if (newLines) {
-        scriptCode.push.apply(scriptCode, newLines)
-        lineNumber += newLines.length
+      if (finished) {
+        return
       }
+
+      inScript = true
+      tagStartLineNum = code.slice(0, parser.endIndex).match(/\r\n|\n|\r/g).length + 1
     },
 
     onclosetag: function(name) {
       if (name !== 'script' || !inScript) {
         return
       }
-
-      scriptCode[scriptCode.length - 1] = scriptCode[scriptCode.length - 1].replace(/[ \t]*$/, '')
       inScript = false
-      index = parser.startIndex
-      indent = null
+      finished = true
     },
 
     ontext: function(data) {
@@ -52,33 +45,28 @@ function extract(code) {
         return
       }
 
-      var spaces
       if (!indent) {
-        spaces = /^[\n\r]*(\s*)/.exec(data)[1]
-        indent = new RegExp('^(?:' + spaces + ')?(.*)', 'gm')
+        var spaces = /^[\n\r]*(\s*)/.exec(data)[1]
+        indentRegex = new RegExp('^(?:' + spaces + ')?(.*)', 'gm')
+        indent = spaces.length
       }
 
       // dedent code
-      data = data.replace(indent, function(_, line) {
-        lineNumber += 1
+      scriptCode += data.replace(indentRegex, function(_, line) {
         return line
       })
-
-      lineNumber -= 1
-
-      if (spaces !== undefined) {
-        map.push({ line: lineNumber, spaces: spaces.length })
-      } else {
-        map[map.length - 1].line = lineNumber
-      }
-      scriptCode.push(data) // Collect JavaScript code.
     }
 
   })
 
   parser.parseComplete(code)
 
-  return { map: map, code: scriptCode.join('') }
+  if (!indent) {
+    indent = 0
+  }
+  // trim the last line's ending spaces
+  scriptCode = scriptCode.replace(/[ \t]*$/, '')
+  return { code: scriptCode, line: tagStartLineNum, indent: indent }
 }
 
 module.exports = extract

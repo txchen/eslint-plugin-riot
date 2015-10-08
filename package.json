@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-riot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "eslint plugin to lint javascript in riot tag.",
   "main": "src/index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "keywords": [
     "eslint",
+    "eslintplugin",
     "riot",
     "lint",
     "linter"
@@ -24,8 +25,8 @@
   },
   "homepage": "https://github.com/txchen/eslint-plugin-riot#readme",
   "devDependencies": {
-    "eslint": "^1.0.0",
-    "tape": "^4.0.2"
+    "eslint": "^1.6.0",
+    "tape": "^4.2.1"
   },
   "dependencies": {
     "htmlparser2": "^3.8.3"

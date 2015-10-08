@@ -1,10 +1,11 @@
 var test = require('tape')
 var extract = require('../src/extract.js')
 
-function assertExtract(test, html, code, map) {
+function assertExtract(test, html, code, line, indent) {
   var result = extract(html)
   test.equal(result.code, code)
-  test.deepEqual(result.map, map)
+  test.equal(result.line, line)
+  test.equal(result.indent, indent)
 }
 
 function s() {
@@ -16,7 +17,7 @@ test('extract tag with no script', function(t) {
     s('<app>',
       '</app>'),
     '',
-    []
+    0, 0
   )
   t.end()
 })
@@ -26,21 +27,30 @@ test('extract simple script', function(t) {
     s('<x-tag>',
       '<script type="es6">var foo = 1</script>',
       '</x-tag>'),
-    s('',
-      'var foo = 1'),
-    [ { line: 2, spaces: 0 } ]
+    s('var foo = 1'),
+    2, 0
   )
   t.end()
 })
 
-test('ignore non es6 script', function(t) {
+test('ignore script with no type', function(t) {
   assertExtract(t,
     s('<x-tag>',
       '<script>var foo = 1</script>',
+      '</x-tag>'),
+    '',
+    0, 0
+  )
+  t.end()
+})
+
+test('ignore non-es6 script', function(t) {
+  assertExtract(t,
+    s('<x-tag>',
       '<script type="coffee">var foo = 2</script>',
       '</x-tag>'),
     '',
-    []
+    0, 0
   )
   t.end()
 })
@@ -49,14 +59,32 @@ test('process indented script', function(t) {
   assertExtract(t,
     s('<x-tag>',
       '  <script type="es6">',
-      '    var foo = 1',
+      '    var foo = 1  ',
       '  </script>',
       '</x-tag>'),
     s('',
-      '',
-      'var foo = 1',
+      'var foo = 1  ',
       ''),
-    [ { line: 4, spaces: 4 } ]
+    2, 4
+  )
+  t.end()
+})
+
+test('process multiple script tag file, should only extract the 1st block', function(t) {
+  assertExtract(t,
+    s('<x-tag>',
+      '  <script type="es6">',
+      '    var foo = 1  ',
+      '  </script>',
+      '',
+      '  <script type="es6">',
+      '    var foo = 2  ',
+      '  </script>',
+      '</x-tag>'),
+    s('',
+      'var foo = 1  ',
+      ''),
+    2, 4
   )
   t.end()
 })
@@ -68,11 +96,10 @@ test('extract script with 1st line next to the script tag', function(t) {
       '  var baz = 1',
       '</script>',
       '</x-tag>'),
-    s('',
-      'var foo = 1',
+    s('var foo = 1',
       '  var baz = 1',
       ''),
-    [ { line: 4, spaces: 0 } ]
+    2, 0
   )
   t.end()
 })
@@ -87,50 +114,9 @@ test('extract script with last line next to the script tag', function(t) {
       '  var baz = 1</script>',
       '</app>'),
     s('',
-      '',
-      '',
-      '',
       'var foo = 1',
       'var baz = 1'),
-    [ { line: 6, spaces: 2 } ]
-  )
-  t.end()
-})
-
-test('extract multiple script tags', function(t) {
-  assertExtract(t,
-    s('<my-footer>',
-      '  <div>',
-      '    <span>{ name }</span>',
-      '  </div>',
-      '',
-      '  <script type="es6">',
-      '  var foo = 1',
-      '  var baz = 1',
-      '  </script>',
-      '',
-      '  <script type="es6">',
-      '    var foo = 2',
-      '    var baz = 2',
-      '  </script>',
-      '  <script>non-es6</script>',
-      '</my-footer>'),
-    s('',
-      '',
-      '',
-      '',
-      '',
-      '',
-      'var foo = 1',
-      'var baz = 1',
-      '',
-      '',
-      '',
-      'var foo = 2',
-      'var baz = 2',
-      ''),
-    [ { line: 9, spaces: 2 },
-      { line: 14, spaces: 4 } ]
+    4, 2
   )
   t.end()
 })
@@ -141,16 +127,13 @@ test('trim last line spaces', function(t) {
       '  <div>test</div>',
       '',
       '  <script type="es6">',
-      '    var foo = 1',
+      '    var foo = 1  ',
       '  </script>',
       '</app>'),
     s('',
-      '',
-      '',
-      '',
-      'var foo = 1',
+      'var foo = 1  ',
       ''),
-    [ { line: 6, spaces: 4 } ]
+    4, 4
   )
   t.end()
 })
@@ -165,12 +148,11 @@ test('extract script containing "lt" characters', function(t) {
       '  </script>',
       '</app>'),
     s('',
-      '',
       'if (a < b) {',
       '  doit()',
       '}',
       ''),
-    [ { line: 6, spaces: 2 } ]
+    2, 2
   )
   t.end()
 })
@@ -183,10 +165,9 @@ test('extract script with tab', function(t) {
       '\t</script>',
       '</app>'),
     s('',
-      '',
       'var b = 1',
       ''),
-    [ { line: 4, spaces: 1 } ]
+    2, 1
   )
   t.end()
 })

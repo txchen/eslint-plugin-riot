@@ -1,26 +1,19 @@
-// forked from https://github.com/BenoitZugmeyer/eslint-plugin-html
-'use script'
+'use strict'
 
 var extract = require('./extract')
 
-var currentInfos
+var blockInfo // code, line, indent
 
 var tagProcessor = {
   preprocess: function(content) {
-    currentInfos = extract(content)
-    return [currentInfos.code]
+    blockInfo = extract(content)
+    return [blockInfo.code]
   },
 
-  postprocess: function(messages) {
-    var map = currentInfos.map
-    var blockIndex = 0
+  postprocess: function(messages, filename) {
     messages[0].forEach(function(message) {
-      while (blockIndex < map.length - 1 && map[blockIndex].line < message.line) {
-        blockIndex += 1
-      }
-      if (blockIndex < map.length) {
-        message.column += map[blockIndex].spaces
-      }
+      message.column += blockInfo.indent
+      message.line += (blockInfo.line - 1)
     })
     return messages[0]
   }
