@@ -1,5 +1,6 @@
 ## eslint-plugin-riot
 [![Build Status][travis-image]][travis-url]
+[![NPM version][npm-version-image]][npm-url]
 [![Code Climate][codeclimate-image]][codeclimate-url]
 
 An [ESLint](http://eslint.org/) plugin to extract and lint scripts from [riot](riotjs.com) tag.
@@ -50,5 +51,9 @@ Write your riot tag file with extension `.html` or `.tag`, and wrap your script 
 
 [codeclimate-image]:https://codeclimate.com/github/txchen/eslint-plugin-riot/badges/gpa.svg
 [codeclimate-url]:https://codeclimate.com/github/txchen/eslint-plugin-riot
+
+[npm-version-image]:http://img.shields.io/npm/v/eslint-plugin-riot.svg?style=flat-square
+[npm-url]:https://www.npmjs.com/package/eslint-plugin-riot
+
 [travis-image]:https://travis-ci.org/txchen/eslint-plugin-riot.svg
 [travis-url]:https://travis-ci.org/txchen/eslint-plugin-riot
