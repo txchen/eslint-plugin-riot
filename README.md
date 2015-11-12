@@ -7,7 +7,7 @@ An [ESLint](http://eslint.org/) plugin to extract and lint scripts from [riot](r
 
 Supported extensions are `.html` and `.tag`.
 
-It only lints `es6` script in tag.
+It only lints `es6` and `babel` script in tag.
 
 ### Usage
 

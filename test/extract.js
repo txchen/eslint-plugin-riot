@@ -22,10 +22,21 @@ test('extract tag with no script', function(t) {
   t.end()
 })
 
-test('extract simple script', function(t) {
+test('extract simple es6 script', function(t) {
   assertExtract(t,
     s('<x-tag>',
       '<script type="es6">var foo = 1</script>',
+      '</x-tag>'),
+    s('var foo = 1'),
+    2, 0
+  )
+  t.end()
+})
+
+test('extract simple babel script', function(t) {
+  assertExtract(t,
+    s('<x-tag>',
+      '<script type="babel">var foo = 1</script>',
       '</x-tag>'),
     s('var foo = 1'),
     2, 0
