@@ -20,8 +20,7 @@ function extract(code) {
       }
 
       // currently only support es6/babel script
-      if (!attrs.type ||
-          (attrs.type.toLowerCase().indexOf('es6') < 0 && attrs.type.toLowerCase().indexOf('babel') < 0)) {
+      if (!attrs.type || ['es6', 'babel', 'javascript'].indexOf(attrs.type.toLowerCase()) < 0) {
         return
       }
 
