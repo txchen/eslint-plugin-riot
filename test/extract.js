@@ -33,6 +33,17 @@ test('extract simple es6 script', function(t) {
   t.end()
 })
 
+test('extract simple javascript script', function(t) {
+  assertExtract(t,
+    s('<x-tag>',
+      '<script type="javascript">var foo = 1</script>',
+      '</x-tag>'),
+    s('var foo = 1'),
+    2, 0
+  )
+  t.end()
+})
+
 test('extract simple babel script', function(t) {
   assertExtract(t,
     s('<x-tag>',
