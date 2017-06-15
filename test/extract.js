@@ -55,13 +55,13 @@ test('extract simple babel script', function(t) {
   t.end()
 })
 
-test('ignore script with no type', function(t) {
+test('extract script with no type', function(t) {
   assertExtract(t,
     s('<x-tag>',
       '<script>var foo = 1</script>',
       '</x-tag>'),
-    '',
-    0, 0
+    s('var foo = 1'),
+    2, 0
   )
   t.end()
 })
