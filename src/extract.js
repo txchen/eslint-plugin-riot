@@ -29,7 +29,7 @@ function extract(code) {
       }
 
       inScript = true
-      let m = code.slice(0, parser.endIndex).match(/\r\n|\n|\r/g) || []
+      var m = code.slice(0, parser.endIndex).match(/\r\n|\n|\r/g) || []
       tagStartLineNum = m.length + 1
     },
 
