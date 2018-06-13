@@ -29,7 +29,8 @@ function extract(code) {
       }
 
       inScript = true
-      tagStartLineNum = code.slice(0, parser.endIndex).match(/\r\n|\n|\r/g).length + 1
+      let m = code.slice(0, parser.endIndex).match(/\r\n|\n|\r/g) || []
+      tagStartLineNum = m.length + 1
     },
 
     onclosetag: function(name) {
