@@ -3,7 +3,7 @@
 [![NPM version][npm-version-image]][npm-url]
 [![Code Climate][codeclimate-image]][codeclimate-url]
 
-An [ESLint](http://eslint.org/) plugin to extract and lint scripts from [riot](riotjs.com) tag.
+An [ESLint](http://eslint.org/) plugin to extract and lint scripts from [riot](https://riotjs.com) tag.
 
 Supported extensions are `.html` and `.tag`.
 
