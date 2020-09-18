@@ -22,6 +22,7 @@ var tagProcessor = {
 module.exports = {
   processors: {
     '.html': tagProcessor,
-    '.tag': tagProcessor
+    '.tag': tagProcessor,
+    '.riot': tagProcessor
   }
 }
